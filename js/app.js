@@ -112,10 +112,14 @@
 
   function renderBoard() {
     const list = filtered();
-    main.innerHTML = `<div class="board">` + Object.keys(STATUS).map((s) => {
+    const n = (s) => list.filter((t) => t.status === s).length;
+    const late = list.filter((t) => dueClass(t) === "overdue").length;
+    const stat = (num, label, color) => `<div class="stat" style="--c:${color}"><b>${num}</b><span>${label}</span></div>`;
+    main.innerHTML = `<div class="stats">${stat(list.length, "全部工作", "var(--primary)")}${stat(n("doing"), "進行中", "var(--doing)")}${stat(n("done"), "已完成", "var(--done)")}${stat(late, "已逾期", "var(--danger)")}</div>` +
+      `<div class="board">` + Object.keys(STATUS).map((s) => {
       const items = list.filter((t) => t.status === s)
         .sort((a, b) => (a.due_date || "9999").localeCompare(b.due_date || "9999"));
-      return `<div class="col" data-status="${s}"><h3><span>${STATUS[s]}</span><span class="muted">${items.length}</span></h3>${items.map(card).join("")}</div>`;
+      return `<div class="col" data-status="${s}"><h3><span>${STATUS[s]}</span><span class="muted">${items.length}</span></h3>${items.map(card).join("") || `<div class="empty">拖曳卡片到這裡</div>`}</div>`;
     }).join("") + `</div>`;
     main.querySelectorAll(".card").forEach((el) => {
       el.addEventListener("dragstart", (e) => e.dataTransfer.setData("text/plain", el.dataset.id));
