@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工作進度管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>📋 工作進度管理</h1>
+    <nav id="tabs">
+      <button data-view="board" class="active">看板</button>
+      <button data-view="calendar">月曆</button>
+      <button data-view="report">週報</button>
+      <button data-view="recurring">重複任務</button>
+      <button data-view="import">日曆匯入</button>
+    </nav>
+    <button id="btn-new" class="primary">＋ 新增工作</button>
+  </header>
+
+  <div id="setup" class="notice" hidden>
+    <h2>還差一步：連接 Supabase</h2>
+    <ol>
+      <li>到 supabase.com 建立專案，於 SQL Editor 執行 <code>supabase/schema.sql</code></li>
+      <li>把 Project URL 與 anon key 填入 <code>js/config.js</code></li>
+      <li>重新整理本頁</li>
+    </ol>
+    <p>詳細步驟請看 README.md。</p>
+  </div>
+
+  <div id="filters" class="filters">
+    <input id="f-search" type="search" placeholder="搜尋標題／備註…">
+    <select id="f-client"><option value="">全部客戶</option></select>
+    <select id="f-assignee"><option value="">全部負責人</option></select>
+    <span id="status-msg" class="muted"></span>
+  </div>
+
+  <main id="main"></main>
+
+  <dialog id="dlg">
+    <form method="dialog" id="task-form">
+      <h2 id="dlg-title">新增工作</h2>
+      <label>標題 <input name="title" required></label>
+      <div class="row">
+        <label>狀態
+          <select name="status">
+            <option value="todo">待辦</option>
+            <option value="doing">進行中</option>
+            <option value="done">完成</option>
+          </select>
+        </label>
+        <label>優先級
+          <select name="priority">
+            <option value="high">高</option>
+            <option value="medium" selected>中</option>
+            <option value="low">低</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>截止日 <input type="date" name="due_date"></label>
+        <label>負責人 <input name="assignee" list="dl-assignee"></label>
+      </div>
+      <div class="row">
+        <label>客戶／專案 <input name="client" list="dl-client"></label>
+        <label>標籤（用逗號分隔） <input name="tags" placeholder="剪輯, 急件"></label>
+      </div>
+      <div class="row">
+        <label>拍攝日期 <input type="date" name="shoot_date"></label>
+        <label>拍攝地點 <input name="location"></label>
+      </div>
+      <label>備註 <textarea name="notes" rows="3"></textarea></label>
+      <div class="actions">
+        <button type="button" id="btn-delete" class="danger">刪除</button>
+        <span class="spacer"></span>
+        <button type="button" id="btn-cancel">取消</button>
+        <button type="submit" class="primary">儲存</button>
+      </div>
+    </form>
+  </dialog>
+  <datalist id="dl-assignee"></datalist>
+  <datalist id="dl-client"></datalist>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
